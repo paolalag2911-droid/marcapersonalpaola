@@ -888,7 +888,7 @@
           <div class="contact-form">
             <div class="form-success" id="formSuccess">
               <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="M22 4 12 14.01l-3-3"/></svg>
-              <span>¡Gracias! Tu mensaje fue enviado. Te responderé pronto.</span>
+              <span>¡Listo! Se abrió tu cliente de correo con el mensaje para Paola — solo confirma el envío ahí.</span>
             </div>
 
             <form id="contactForm" novalidate>
@@ -918,7 +918,7 @@
               </div>
 
               <button type="submit" class="btn btn-primary btn-block">Enviar mensaje</button>
-              <p class="form-note">Al enviar aceptas ser contactada/o por correo o teléfono respecto a tu solicitud.</p>
+              <p class="form-note">Al enviar se abrirá tu cliente de correo con el mensaje listo para Paola.</p>
             </form>
           </div>
         </div>
@@ -1092,12 +1092,32 @@
       return;
     }
 
-    // Demo only: no backend wired up. Replace this block with a fetch()
-    // call to your email service / API endpoint to actually send messages.
+    // No backend/server: this page is a static file, so it can't send email
+    // or API requests on its own. Instead, it opens the visitor's email
+    // client with the message pre-filled, addressed to Paola — they just
+    // need to hit send there. Swap this for a fetch() call to a form
+    // service (Formspree, EmailJS, etc.) if you want in-page submission.
+    var data = {
+      name: form.elements.name.value.trim(),
+      email: form.elements.email.value.trim(),
+      subject: form.elements.subject.value.trim(),
+      message: form.elements.message.value.trim()
+    };
+    var mailSubject = 'Consulta desde tu web — ' + data.subject;
+    var mailBody =
+      'Nombre: ' + data.name + '\n' +
+      'Correo: ' + data.email + '\n\n' +
+      data.message;
+    var mailtoLink = 'mailto:paola_lag2911@gmail.com' +
+      '?subject=' + encodeURIComponent(mailSubject) +
+      '&body=' + encodeURIComponent(mailBody);
+
     successBox.classList.add('show');
+    successBox.scrollIntoView({ behavior:'smooth', block:'center' });
+    window.location.href = mailtoLink;
+
     form.reset();
     form.querySelectorAll('.field').forEach(function(f){ f.classList.remove('error'); });
-    successBox.scrollIntoView({ behavior:'smooth', block:'center' });
   });
 
 })();
